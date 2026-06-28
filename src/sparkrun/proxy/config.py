@@ -76,6 +76,13 @@ class ProxyConfig:
     def discover_interval(self) -> int:
         return int(self._data.get("proxy", {}).get("discover_interval", DEFAULT_DISCOVER_INTERVAL))
 
+    @property
+    def routing_strategy(self) -> str | None:
+        """LiteLLM Router strategy for load-balancing deployments that share a
+        model_name (e.g. ``least-busy``). None => LiteLLM default (simple-shuffle)."""
+        val = self._data.get("proxy", {}).get("routing_strategy")
+        return str(val) if val else None
+
     def set_proxy(self, **kwargs: Any) -> None:
         """Update proxy settings (port, host, master_key, etc.)."""
         proxy = self._data.setdefault("proxy", {})

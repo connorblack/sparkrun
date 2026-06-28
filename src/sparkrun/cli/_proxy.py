@@ -99,7 +99,7 @@ def start(port, bind_host, master_key, cluster_name, hosts, hosts_file, foregrou
             click.echo("  %s:%d — %s (%s)" % (ep.host, ep.port, models_str, ep.runtime))
 
     # Generate config
-    config_dict = build_litellm_config(healthy, effective_key)
+    config_dict = build_litellm_config(healthy, effective_key, routing_strategy=proxy_cfg.routing_strategy)
 
     if dry_run:
         click.echo("")

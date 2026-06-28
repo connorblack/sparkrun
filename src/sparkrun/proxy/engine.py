@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 def build_litellm_config(
     endpoints: list[DiscoveredEndpoint],
     master_key: str | None = DEFAULT_MASTER_KEY,
+    routing_strategy: str | None = None,
 ) -> dict[str, Any]:
     """Generate a litellm proxy config dict from discovered endpoints.
 
@@ -36,6 +37,10 @@ def build_litellm_config(
         endpoints: Discovered inference endpoints.
         master_key: Master key for litellm management API.  When None,
             no authentication is required (avoids LiteLLM DB dependency).
+        routing_strategy: Optional LiteLLM Router strategy (e.g. ``"least-busy"``,
+            ``"simple-shuffle"``, ``"latency-based-routing"``) applied across
+            deployments that share a ``model_name``.  When None, LiteLLM's
+            default (simple-shuffle) is used.
 
     Returns:
         Dict suitable for writing as litellm YAML config.
@@ -81,6 +86,9 @@ def build_litellm_config(
 
     if general_settings:
         config["general_settings"] = general_settings
+
+    if routing_strategy:
+        config["router_settings"] = {"routing_strategy": routing_strategy}
 
     return config
 
